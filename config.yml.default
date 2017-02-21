@@ -1,0 +1,13 @@
+default:
+  server: 'mumble://'
+  name: 'bot'
+  telegram_token: ''
+  introduction: 'Bot is ready.'
+  espeak:
+    language: 'en'
+    gender: 'F'
+    volume: 100
+    pitch: 60
+    rate: 175
+    gap: 1
+    range: 80
