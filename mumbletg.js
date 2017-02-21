@@ -8,6 +8,7 @@ var tg = require('node-telegram-bot-api');
 var ESpeak = require('node-espeak');
 var yaml_config = require('node-yaml-config');
 var exec = require('child_process').exec;
+var http = require('http');
 
 /* Load config */
 var config = yaml_config.load('config.yml');
@@ -48,8 +49,7 @@ var generateSpeech = function(connection) {
         gain: 1
     });
 
-    if(config.tts == 'espeak')
-    {
+    if (config.tts == 'espeak') {
         ESpeak.initialize();
         ESpeak.setLanguage(config.espeak.language);
         ESpeak.setGender(config.espeak.gender);
@@ -63,7 +63,7 @@ var generateSpeech = function(connection) {
             stream.write(wav);
         });
 
-        ESpeak.speak(config.introduction);
+        //ESpeak.speak(config.introduction);
     }
 };
 
@@ -73,6 +73,22 @@ bot.on('message', (msg) => {
 
     if (config.tts == 'espeak') {
         ESpeak.speak(text);
+    } else if (config.tts == 'google') {
+        var url = 'http://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=' + text + '&tl=' + config.google.language;
+
+        var file = fs.createWriteStream("voice.mp3");
+        var request = http.get(url, function(response) {
+            response.pipe(file);
+        });
+
+
+        exec("avconv -i voice.mp3 -acodec pcm_s16le -ac 1 -ar 22100 voice.wav -y", function(error) {
+            if (error) {
+                console.log('error while executing command ');
+            }
+            var file = fs.readFileSync('voice.wav');
+            stream.write(file);
+        });
     } else {
         var cmd = 'pico2wave -l ' + config.pico.language + ' -w voice.wav' + ' " ' + text + '"';
 

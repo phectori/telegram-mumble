@@ -12,6 +12,10 @@ To install pico:
 
     sudo apt-get install libttspico0 libttspico-utils libttspico-data
 
+To install avconv:
+
+    sudo apt-get install libav-tools
+
 Run with:
 
     node mumbletg.js
