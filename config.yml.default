@@ -3,6 +3,7 @@ default:
   name: 'bot'
   telegram_token: ''
   introduction: 'Bot is ready.'
+  tts: 'espeak'
   espeak:
     language: 'en'
     gender: 'F'
@@ -11,3 +12,5 @@ default:
     rate: 175
     gap: 1
     range: 80
+  pico:
+    language: 'en-GB'

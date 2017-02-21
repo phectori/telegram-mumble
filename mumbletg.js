@@ -7,6 +7,7 @@ var mumble = require('mumble'),
 var tg = require('node-telegram-bot-api');
 var ESpeak = require('node-espeak');
 var yaml_config = require('node-yaml-config');
+var exec = require('child_process').exec;
 
 /* Load config */
 var config = yaml_config.load('config.yml');
@@ -47,25 +48,44 @@ var generateSpeech = function(connection) {
         gain: 1
     });
 
-    ESpeak.initialize();
+    if(config.tts == 'espeak')
+    {
+        ESpeak.initialize();
+        ESpeak.setLanguage(config.espeak.language);
+        ESpeak.setGender(config.espeak.gender);
+        ESpeak.setPitch(config.espeak.pitch);
+        ESpeak.setRange(config.espeak.range);
+        ESpeak.setGap(config.espeak.gap);
+        ESpeak.setRate(config.espeak.rate);
+        ESpeak.setVolume(config.espeak.volume);
 
-    ESpeak.setLanguage(config.espeak.language);
-    ESpeak.setGender(config.espeak.gender);
-    ESpeak.setPitch(config.espeak.pitch);
-    ESpeak.setRange(config.espeak.range);
-    ESpeak.setGap(config.espeak.gap);
-    ESpeak.setRate(config.espeak.rate);
-    ESpeak.setVolume(config.espeak.volume);
+        ESpeak.onVoice(function(wav, samples, samplerate) {
+            stream.write(wav);
+        });
 
-    ESpeak.onVoice(function(wav, samples, samplerate) {
-        stream.write(wav);
-    });
-
-    ESpeak.speak(config.introduction);
+        ESpeak.speak(config.introduction);
+    }
 };
 
 bot.on('message', (msg) => {
     var text = msg.from.first_name + ": " + msg.text;
-    ESpeak.speak(text);
     console.log(text);
+
+    if (config.tts == 'espeak') {
+        ESpeak.speak(text);
+    } else {
+        var cmd = 'pico2wave -l ' + config.pico.language + ' -w voice.wav' + ' " ' + text + '"';
+
+        exec(cmd, function(error) {
+            // command output is in stdout
+            if (error) {
+                console.log('error while executing command ', cmd);
+            }
+
+            var file = fs.readFileSync('voice.wav');
+
+            stream.write(file);
+            console.log(text);
+        });
+    }
 });
