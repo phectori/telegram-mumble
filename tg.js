@@ -2,6 +2,8 @@ var tg = require('node-telegram-bot-api');
 var redis = require("redis")
 var moment = require('moment');
 var yaml_config = require('node-yaml-config');
+var http = require('http');
+var parseString = require('xml2js').parseString;
 var client = redis.createClient();
 var pub = redis.createClient();
 
@@ -23,15 +25,49 @@ const bot = new tg(config.telegram_token, {
 
 bot.onText(/\/say/, (msg) => {
     if (msg.text != "/say") {
-        var text = msg.from.first_name + ": " + msg.text.replace("/say","");
-        pub.publish("mumbleSay", text);
+        var text = msg.from.first_name + ": " + msg.text.replace("/say", "");
+        var object = {
+            name: msg.from.first_name,
+            text: text
+        };
+        pub.publish("mumbleSay", JSON.stringify(object));
     }
 });
 
-bot.onText(/\/sayl/, (msg) => {
-    if (msg.text != "/sayl") {
-        var text = msg.text.split(' ')[0] + ' ' + msg.from.first_name + ": " + msg.text.replace("/say","");
-        pub.publish("mumbleSayl", text);
+bot.onText(/\/translate/, (msg) => {
+    if (msg.text != "/translate") {
+        var text = msg.text.replace("/translate ", "");
+        var language = text.split(" ")[0];
+        var text = text.substr(text.indexOf(" ") + 1);
+        var object = {
+            name: msg.from.first_name,
+            text: text,
+            lang: language,
+            translateTo: language
+        };
+        pub.publish("mumbleSay", JSON.stringify(object));
+    }
+});
+
+bot.onText(/\/replay/, (msg) => {
+    if (msg.text != "/replay") {
+        var replayUser = msg.text.split(" ")[1];
+        var object = {
+            name: msg.from.first_name,
+            replay: replayUser
+        };
+        pub.publish("mumbleSay", JSON.stringify(object));
+    }
+});
+
+bot.onText(/\/youtube/, (msg) => {
+    if (msg.text != "/youtube") {
+        var url = msg.text.split(" ")[1];
+        var object = {
+            name: msg.from.first_name,
+            youtube: url
+        };
+        pub.publish("mumbleSay", JSON.stringify(object));
     }
 });
 
@@ -68,7 +104,7 @@ bot.onText(/\/clients/, (msg) => {
             bot.sendMessage(msg.chat.id, "No one is online");
         } else {
             console.log("[/clients] " + values);
-            bot.sendMessage(msg.chat.id, values.toString().replace(/,/g,'\n'));
+            bot.sendMessage(msg.chat.id, values.toString().replace(/,/g, '\n'));
         }
     });
 });
