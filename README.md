@@ -10,12 +10,18 @@ To generate certificates:
 
 To install pico:
 
-    sudo apt-get install libttspico0 libttspico-utils libttspico-data
+    sudo apt install libttspico0 libttspico-utils libttspico-data
 
 To install avconv:
 
-    sudo apt-get install libav-tools
+    sudo apt install libav-tools
+
+To install and start redis-server:
+
+    sudo apt install redis-server
+    sudo systemctl start redis-server
 
 Run with:
 
     node mumbletg.js
+    node tg.js
