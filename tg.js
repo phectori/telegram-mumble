@@ -3,7 +3,6 @@ var redis = require("redis")
 var moment = require('moment');
 var yaml_config = require('node-yaml-config');
 var http = require('http');
-var parseString = require('xml2js').parseString;
 var client = redis.createClient();
 var pub = redis.createClient();
 
