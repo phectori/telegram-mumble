@@ -202,12 +202,26 @@ function replay(user) {
     }, 11000);
 }
 
-function youtube(url) {
+function youtube(data) {
+    var url = data['url']
+    var parameter = data['arg'];
+
     if (url == 'pause') {
         musicStream.cork();
         return;
     } else if (url == 'resume') {
         musicStream.uncork();
+        return;
+    } else if (url == 'volume') {
+        // Check for sanity
+        if (parameter <= 0) {
+            parameter = 0.01;
+        } else if (parameter > 1) {
+            parameter = 1;
+        }
+        musicGain = parameter;
+        musicStream.setGain(musicGain);
+        console.log('[yt] Youtube volume = ' + musicGain);
         return;
     }
 
@@ -249,7 +263,7 @@ sub.on("message", function(channel, message) {
         console.log('[redis] replay "' + object.replay + '"');
         replay(object.replay);
     } else if ("youtube" in object) {
-        console.log('[redis] youtube "' + object.youtube + '"');
+        console.log('[redis] youtube "' + JSON.stringify(object.youtube) + '"');
         youtube(object.youtube);
     } else {
         console.log("[redis] " + channel + ': "' + object.text + '"');

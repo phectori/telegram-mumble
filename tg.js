@@ -62,9 +62,10 @@ bot.onText(/\/replay/, (msg) => {
 bot.onText(/\/youtube/, (msg) => {
     if (msg.text != "/youtube") {
         var url = msg.text.split(" ")[1];
+        var arg = msg.text.split(" ")[2];
         var object = {
             name: msg.from.first_name,
-            youtube: url
+            youtube: {url: url, arg: arg}
         };
         pub.publish("mumbleSay", JSON.stringify(object));
     }
