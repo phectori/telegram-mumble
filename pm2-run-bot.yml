@@ -1,0 +1,15 @@
+{
+  "apps" : 
+  [
+    {
+      "name"        : "telegram-interface",
+      "script"      : "./tg.js",
+      "watch"       : true,
+    },
+    {
+      "name"       : "mumble-interface",
+      "script"     : "./mumbletg.js",
+      "watch"      : "true",
+    }
+  ]
+}
