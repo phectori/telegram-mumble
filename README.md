@@ -2,7 +2,7 @@
 
 Dependencies:
 
-    npm i mumble node-telegram-bot-api node-espeak node-yaml-config
+    npm i mumble node-telegram-bot-api node-espeak node-yaml-config redis ytdl-core google-translate-api
 
 To generate certificates:
 
