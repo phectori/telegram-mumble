@@ -1,6 +1,7 @@
 default:
   server: 'mumble://'
   name: 'bot'
+  password: 'password'
   telegram_token: ''
   introduction: 'Bot is ready.'
   tts: 'google'

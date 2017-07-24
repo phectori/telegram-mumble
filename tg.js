@@ -116,3 +116,7 @@ bot.onText(/\/uptime/, (msg) => {
     console.log("[/uptime] " + response + duration);
     bot.sendMessage(msg.chat.id, response + duration);
 });
+
+// bot.on('voice', (msg) => {
+//     console.log(msg)
+// });

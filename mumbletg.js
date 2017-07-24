@@ -25,7 +25,7 @@ var stream;
 var musicStream;
 
 var musicChannels = 1;
-var musicGain = 0.4;
+var musicGain = 0.1;
 
 var options = {
     key: fs.readFileSync('key.pem'),
@@ -36,7 +36,6 @@ var options = {
 client.on("error", function(err) {
     console.log("Error " + err);
 });
-
 clientb.on("error", function(err) {
     console.log("Error " + err);
 });
@@ -48,7 +47,7 @@ mumble.connect(config.server, options, (error, connection) => {
     }
 
     console.log('Connected');
-    connection.authenticate(config.name);
+    connection.authenticate(config.name, config.password);
     connection.on('initialized', () => initialize(connection));
     connection.on('voice-end', onVoiceEnd);
 
@@ -74,6 +73,7 @@ mumble.connect(config.server, options, (error, connection) => {
 var onUserVoice = function(voice, name) {
     clientb.send_command('lpush', ['voice-' + name, voice]);
     clientb.send_command('ltrim', ['voice-' + name, 0, 999]);
+    clientb.send_command('expire', ['voice-' + name, 300]);
 }
 
 var onVoiceEnd = function(user) {
